@@ -54,6 +54,7 @@ Type :: to_string () const
 void
 Type :: resize (int new_sz)
 {
+    if (new_sz <= 0) throw "Нельзя увеличить массив в отрицательную сторону";
     while (new_sz > vector.size()) {
         vector.push_back(SimpleType());
     }

@@ -15,6 +15,8 @@ inter (Parser &parser) {
                         Interpreter:: make_line(poliz);
                 } catch (Exeption& e) {
                         cout << e.what() << endl;
+                } catch (const char *s) {
+                        cout << s << endl;
                 }
         }
 }
@@ -28,6 +30,8 @@ main (int argc, char* argv[])
                         inter(parser);
                 } catch (Exeption &e) {
                         cout << e.what() << endl;
+                } catch (const char *s) {
+                        cout << s << endl;
                 }
         }
 
@@ -36,6 +40,8 @@ main (int argc, char* argv[])
                 inter(parser);
         } catch (Exeption &e) {
                 cout << e.what() << endl;
+        } catch (const char *s) {
+                cout << s << endl;
         }
 
         return 0;

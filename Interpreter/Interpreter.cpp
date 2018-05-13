@@ -195,7 +195,7 @@ Interpreter :: function_call ()
                 if (i->type == TYPE_NULL) throw InterExeption("Нельзя выполнить NULL");
 
                 std::map<std::string, Type> tmp_map;
-                std::map<std::string, Type> &v_table = i->fun_val()->v_table;
+                std::vector<std::pair<std::string, Type>> &v_table = i->fun_val()->v_table;
                 /* Копируем строки */
                 for (auto j = v_table.begin(); j != v_table.end(); ++j) {
                         tmp_map[j->first] = Type(SimpleType());
@@ -219,16 +219,17 @@ Interpreter :: function_call ()
                 }
 
                 /* Записываем значения по порядку */
-                for (auto j = tmp_map.begin(); j != tmp_map.end(); ++j) {
-                        if (j->second.type == TYPE_NULL) {
+                for (auto j = v_table.begin(); j != v_table.end(); ++j) {
+                        if (tmp_map[j->first].type == TYPE_NULL) {
                                 if (!tmp_par.empty()) {
-                                        j->second = get_type(tmp_par[0].second);
+                                        tmp_map[j->first] = get_type(tmp_par[0].second);
                                         tmp_par.erase(tmp_par.begin());
                                 } else {
-                                        j->second = v_table[j->first];
+                                        tmp_map[j->first] = j->second;
                                 }
                         }
                 }
+
                 if (!tmp_par.empty()) throw InterExeption("To many arguments in function");
 
                 Interpreter inter(global_table, tmp_map);
@@ -345,6 +346,7 @@ Interpreter :: start ()
 void
 Interpreter :: make_line (const Poliz &poliz)
 {
+
         auto tmp = Interpreter::v_table;
         std::map <std::string, Type> tmp2;
         Interpreter inter(tmp, tmp2);

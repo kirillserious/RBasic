@@ -429,24 +429,27 @@ void
 Parser :: FunctionArgs (Functional *func)
 {
         //std :: cerr << "FunctionArgs" << std :: endl;
+
         next_not_endl();
         if (!is(LT_VARIABLE)) throw ParserExeption("Нет переменной");
         std::string variable = name();
         get();
         next_not_endl();
         if (is(LT_SYMBOL) && sym_is(LEX_CIRCLECLOSE)) {
-                if (func->v_table.find(variable) != func->v_table.end()) {
+                if (func->is_here(variable)) {
                         throw ParserExeption("Повторное описание локальной переменной");
                 }
-                func->v_table.insert({variable, SimpleType()});
+
+                func->v_table.push_back({variable, SimpleType()});
                 get();
                 return;
         }
         if (is(LT_SYMBOL) && sym_is(LEX_COMMA)) {
-                if (func->v_table.find(variable) != func->v_table.end()) {
+
+                if (func->is_here(variable)) {
                         throw ParserExeption("Повторное описание локальной переменной");
                 }
-                func->v_table.insert({variable, SimpleType()});
+                func->v_table.push_back({variable, SimpleType()});
                 get();
                 FunctionArgs(func);
                 return;
@@ -455,10 +458,10 @@ Parser :: FunctionArgs (Functional *func)
                 get();
                 next_not_endl();
                 if (is(LT_CONSTANT)) {
-                        if (func->v_table.find(variable) != func->v_table.end()) {
+                        if (func->is_here(variable)) {
                                 throw ParserExeption("Повторное описание локальной переменной");
                         }
-                        func->v_table.insert({variable, type()});                      
+                        func->v_table.push_back({variable, type()});                      
                         get();
                         next_not_endl();
                         if (is(LT_SYMBOL) && sym_is(LEX_CIRCLECLOSE)) {
